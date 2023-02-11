@@ -6,14 +6,30 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'common Python functions'
+project = 'Common Python Functions'
 copyright = '2023, Steve'
 author = 'Steve'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = [
+    'sphinx.ext.autodoc',
+    'autoapi.extension'
+]
+
+autoapi_type = 'python'
+autoapi_dirs = ['../src/common_functions']
+autodoc_typehints = 'description'
+autoapi_options = [
+    'members',
+    'undoc-members',
+    'private-members',
+    'show-inheritance',
+    'show-module-summary',
+    'special-members',
+    'imported-members',
+]
 
 templates_path = ['_templates']
 exclude_patterns = []
