@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Common Python Functions'
+project = 'Having a sip'
 copyright = '2023, Steve'
 author = 'Steve'
 
@@ -19,7 +19,7 @@ extensions = [
 ]
 
 autoapi_type = 'python'
-autoapi_dirs = ['../src/common_functions']
+autoapi_dirs = ['../src/having_a_sip']
 autodoc_typehints = 'description'
 autoapi_options = [
     'members',
