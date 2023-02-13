@@ -78,9 +78,7 @@ def dump_file(
     with open(filename, "w") as f:
         if isinstance(dumped_content, (list, dict)):
             dumped_content = json.dumps(content, indent=4)
-            f.write(dumped_content)
-        else:
-            f.write(dumped_content)
+        f.write(dumped_content)
 
 
 def read_file(

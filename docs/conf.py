@@ -33,7 +33,7 @@ autoapi_options = [
 
 templates_path = ['_templates']
 exclude_patterns = []
-
+add_module_names = False
 
 
 # -- Options for HTML output -------------------------------------------------

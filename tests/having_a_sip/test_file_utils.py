@@ -40,13 +40,13 @@ class FileUtilsTest(unittest.TestCase):
     def test_read_txt_file(self):
         """Test read_file function. Read a txt file"""
         # Mock data
-        file_content_mock = """Mock .txt file"""
+        mocked_file_content = """Mock .txt file"""
         fake_file_path = "path/mock.txt"
-        expected = file_content_mock
+        expected = mocked_file_content
         # Test
         with patch(
             "src.having_a_sip.file_utils.open".format(__name__),
-            new=mock_open(read_data=file_content_mock)
+            new=mock_open(read_data=mocked_file_content)
         ) as _file:
             actual = _file_utils.read_file(fake_file_path)
             _file.assert_called_once_with(fake_file_path, "r")
@@ -56,7 +56,7 @@ class FileUtilsTest(unittest.TestCase):
     def test_read_json_file(self):
         """Test read_file function. Read a json file"""
         # Mock data
-        file_content_mock = """
+        mocked_file_content = """
         [{"test_key_1": "test_value_1", "test_key_2": "test_value_2"}]
         """
         fake_file_path = "path/mock.json"
@@ -67,12 +67,24 @@ class FileUtilsTest(unittest.TestCase):
         # Test
         with patch(
             "src.having_a_sip.file_utils.open".format(__name__),
-            new=mock_open(read_data=file_content_mock)
+            new=mock_open(read_data=mocked_file_content)
         ) as _file:
             actual = _file_utils.read_file(
                 filename=fake_file_path,
                 is_json=True
             )
             _file.assert_called_once_with(fake_file_path, "r")
+        # Assert
+        self.assertEqual(expected, actual)
+
+    def test_parse_bytes_to_str(self):
+        """Test parse_bytes_to_str function. Parse bytes instance to string"""
+        # Mock data
+        mocked_bytes = bytes("mocked bytes", "utf-8")
+        expected = "mocked bytes"
+        # Test
+        actual = _file_utils.parse_bytes_to_str(
+            any_bytes=mocked_bytes,
+        )
         # Assert
         self.assertEqual(expected, actual)
