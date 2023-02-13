@@ -105,10 +105,9 @@ def read_file(
     '''
     response_file = ""
     with open(filename, "r") as f:
+        response_file = f.read()
         if is_json:
-            response_file = json.loads(read_file(filename))
-        else:
-            response_file = f.read()
+            response_file = json.loads(response_file)
     return response_file
 
 
