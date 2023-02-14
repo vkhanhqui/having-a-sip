@@ -9,11 +9,7 @@ class FileUtilsTest(unittest.TestCase):
 
     @patch("src.having_a_sip.file_utils.os.path.exists")
     @patch("src.having_a_sip.file_utils.os.makedirs")
-    def test_create_nonexistent_dir(
-        self,
-        mock_make_dirs,
-        mock_exists
-    ):
+    def test_create_nonexistent_dir(self, mock_make_dirs, mock_exists):
         """Test create_dir function. Create a nonexistent directory"""
         # Mock data
         mock_exists.return_value = False
@@ -24,11 +20,7 @@ class FileUtilsTest(unittest.TestCase):
 
     @patch("src.having_a_sip.file_utils.os.path.exists")
     @patch("src.having_a_sip.file_utils.os.makedirs")
-    def test_create_existent_dir(
-        self,
-        mock_make_dirs,
-        mock_exists
-    ):
+    def test_create_existent_dir(self, mock_make_dirs, mock_exists):
         """Test create_dir function. Create an existent directory"""
         # Mock data
         mock_exists.return_value = True
@@ -108,13 +100,13 @@ class FileUtilsTest(unittest.TestCase):
             mock_file().write.assert_called_once_with(content)
 
     @patch("src.having_a_sip.file_utils.parse_bytes_to_str")
-    def test_dump_file_bytes(self, parse_bytes_to_str):
+    def test_dump_file_bytes(self, mock_parse_bytes_to_str):
         """Test dump_file function. Dump bytes to a txt file"""
         # Mock data
         fake_file_path = "path/mock.txt"
         content_bytes = bytes("Message to write on file to be written", "utf-8")
         expect_content_bytes = content_bytes
-        parse_bytes_to_str.return_value = content_bytes
+        mock_parse_bytes_to_str.return_value = content_bytes
         # Test
         with patch(
             "src.having_a_sip.file_utils.open",
@@ -125,12 +117,12 @@ class FileUtilsTest(unittest.TestCase):
                 content=content_bytes
             )
         # Assert
-            parse_bytes_to_str.assert_called_once_with(expect_content_bytes)
+            mock_parse_bytes_to_str.assert_called_once_with(expect_content_bytes)
             mock_file.assert_called_once_with(fake_file_path, "w")
             mock_file().write.assert_called_once_with(expect_content_bytes)
 
     @patch("src.having_a_sip.file_utils.json.dumps")
-    def test_dump_file_list(self, dumps):
+    def test_dump_file_list(self, mock_dumps):
         """Test dump_file function. Dump list to a json file"""
         # Mock data
         fake_file_path = "path/mock.json"
@@ -141,7 +133,7 @@ class FileUtilsTest(unittest.TestCase):
         expect_content = """
         [{"test_key_1": "test_value_1", "test_key_2": "test_value_2"}]
         """
-        dumps.return_value = expect_content
+        mock_dumps.return_value = expect_content
         # Test
         with patch(
             "src.having_a_sip.file_utils.open",
@@ -152,12 +144,12 @@ class FileUtilsTest(unittest.TestCase):
                 content=content
             )
         # Assert
-            dumps.assert_called_once_with(content, indent=4)
+            mock_dumps.assert_called_once_with(content, indent=4)
             mock_file.assert_called_once_with(fake_file_path, "w")
             mock_file().write.assert_called_once_with(expect_content)
 
     @patch("src.having_a_sip.file_utils.json.dumps")
-    def test_dump_file_dict(self, dumps):
+    def test_dump_file_dict(self, mock_dumps):
         """Test dump_file function. Dump dict to a json file"""
         # Mock data
         fake_file_path = "path/mock.json"
@@ -168,7 +160,7 @@ class FileUtilsTest(unittest.TestCase):
         expect_content = """
         {"test_key_1": "test_value_1", "test_key_2": "test_value_2"}
         """
-        dumps.return_value = expect_content
+        mock_dumps.return_value = expect_content
         with patch(
             "src.having_a_sip.file_utils.open",
             mock_open()
@@ -179,24 +171,34 @@ class FileUtilsTest(unittest.TestCase):
                 content=content
             )
         # Assert
-            dumps.assert_called_once_with(content, indent=4)
+            mock_dumps.assert_called_once_with(content, indent=4)
             mock_file.assert_called_once_with(fake_file_path, "w")
             mock_file().write.assert_called_once_with(expect_content)
 
-    def test_get_filenames(self):
-        """Test get_filenames function. Get list of files"""
+    @patch("src.having_a_sip.file_utils.os.listdir")
+    @patch("src.having_a_sip.file_utils.os.path.isfile")
+    def test_get_filenames(self, mock_isfile, mock_listdir):
+        """Test get_filenames function. Get list of filenames"""
         # Mock data
         fake_dirname = "fake_dirname"
-        with patch(
-            "src.having_a_sip.file_utils.os.listdir"
-        ) as mocked_listdir:
-            with patch(
-                "src.having_a_sip.file_utils.os.path.isfile"
-            ) as mocked_isfile:
-                expect = ["a.json", "b.txt"]
-                mocked_listdir.return_value = expect
-                mocked_isfile.side_effect = [True, True]
+        expect = ["a.json", "b.txt"]
+        mock_listdir.return_value = expect
+        mock_isfile.side_effect = [True, True]
         # Test
-                actual = _file_utils.get_filenames(fake_dirname)
+        actual = _file_utils.get_filenames(fake_dirname)
         # Assert
-                self.assertEqual(expect, actual)
+        self.assertEqual(expect, actual)
+
+    @patch("src.having_a_sip.file_utils.get_filenames")
+    @patch("src.having_a_sip.file_utils.read_file")
+    def test_read_files(self, mock_read_file, mock_get_filenames):
+        """Test read_files function. Get list of files"""
+        # Mock data
+        fake_dirname = "fake_dirname"
+        expect = [("a.txt", "content 1"), ("b.txt", "content 2")]
+        mock_get_filenames.return_value = ["a.txt", "b.txt"]
+        mock_read_file.side_effect = ["content 1", "content 2"]
+        # Test
+        actual = _file_utils.read_files(fake_dirname)
+        # Assert
+        self.assertEqual(expect, actual)
