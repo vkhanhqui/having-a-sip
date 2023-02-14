@@ -7,8 +7,8 @@ from src.having_a_sip import file_utils as _file_utils
 class FileUtilsTest(unittest.TestCase):
     """Implement unit tests for functions in having_a_sip.file_utils"""
 
-    @patch("src.having_a_sip.file_utils.exists")
-    @patch("src.having_a_sip.file_utils.makedirs")
+    @patch("src.having_a_sip.file_utils.os.path.exists")
+    @patch("src.having_a_sip.file_utils.os.makedirs")
     def test_create_nonexistent_dir(
         self,
         mock_make_dirs,
@@ -22,8 +22,8 @@ class FileUtilsTest(unittest.TestCase):
         # Assert
         mock_make_dirs.assert_called_once_with("new_dir")
 
-    @patch("src.having_a_sip.file_utils.exists")
-    @patch("src.having_a_sip.file_utils.makedirs")
+    @patch("src.having_a_sip.file_utils.os.path.exists")
+    @patch("src.having_a_sip.file_utils.os.makedirs")
     def test_create_existent_dir(
         self,
         mock_make_dirs,
@@ -169,11 +169,11 @@ class FileUtilsTest(unittest.TestCase):
         {"test_key_1": "test_value_1", "test_key_2": "test_value_2"}
         """
         dumps.return_value = expect_content
-        # Test
         with patch(
             "src.having_a_sip.file_utils.open",
             mock_open()
         ) as mock_file:
+        # Test
             _file_utils.dump_file(
                 filename=fake_file_path,
                 content=content
@@ -182,3 +182,21 @@ class FileUtilsTest(unittest.TestCase):
             dumps.assert_called_once_with(content, indent=4)
             mock_file.assert_called_once_with(fake_file_path, "w")
             mock_file().write.assert_called_once_with(expect_content)
+
+    def test_get_filenames(self):
+        """Test get_filenames function. Get list of files"""
+        # Mock data
+        fake_dirname = "fake_dirname"
+        with patch(
+            "src.having_a_sip.file_utils.os.listdir"
+        ) as mocked_listdir:
+            with patch(
+                "src.having_a_sip.file_utils.os.path.isfile"
+            ) as mocked_isfile:
+                expect = ["a.json", "b.txt"]
+                mocked_listdir.return_value = expect
+                mocked_isfile.side_effect = [True, True]
+        # Test
+                actual = _file_utils.get_filenames(fake_dirname)
+        # Assert
+                self.assertEqual(expect, actual)

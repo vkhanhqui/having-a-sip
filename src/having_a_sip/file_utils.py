@@ -1,6 +1,5 @@
 import json
-from os import listdir, makedirs
-from os.path import exists, isfile, join
+import os
 from typing import List, Union
 
 
@@ -23,9 +22,9 @@ def create_dir(
         )
         # example_dir is created at the root_dir path
     '''
-    is_existed = exists(dirname)
+    is_existed = os.path.exists(dirname)
     if not is_existed:
-        makedirs(dirname)
+        os.makedirs(dirname)
 
 
 def parse_bytes_to_str(
@@ -129,8 +128,8 @@ def get_filenames(
     '''
     filenames = [
         f for f
-        in listdir(dirname)
-        if isfile(join(dirname, f))
+        in os.listdir(dirname)
+        if os.path.isfile(os.path.join(dirname, f))
     ]
     return filenames
 
