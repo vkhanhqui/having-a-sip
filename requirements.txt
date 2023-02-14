@@ -1,4 +1,0 @@
-sphinx
-sphinx-autoapi
-twine
-wheel

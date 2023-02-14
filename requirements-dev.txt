@@ -1,0 +1,5 @@
+sphinx
+sphinx-autoapi
+twine
+wheel
+pytest
