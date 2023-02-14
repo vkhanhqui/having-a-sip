@@ -104,10 +104,7 @@ class FileUtilsTest(unittest.TestCase):
                 content=content
             )
         # Assert
-            # assert if opened file on write mode "w"
             mock_file.assert_called_once_with(fake_file_path, "w")
-            # assert if write(content) was called from the file opened
-            # in another words, assert if the specific content was written in file
             mock_file().write.assert_called_once_with(content)
 
     @patch("src.having_a_sip.file_utils.parse_bytes_to_str")
@@ -129,8 +126,59 @@ class FileUtilsTest(unittest.TestCase):
             )
         # Assert
             parse_bytes_to_str.assert_called_once_with(expect_content_bytes)
-            # assert if opened file on write mode "w"
             mock_file.assert_called_once_with(fake_file_path, "w")
-            # assert if write(content) was called from the file opened
-            # in another words, assert if the specific content was written in file
             mock_file().write.assert_called_once_with(expect_content_bytes)
+
+    @patch("src.having_a_sip.file_utils.json.dumps")
+    def test_dump_file_list(self, dumps):
+        """Test dump_file function. Dump list to a json file"""
+        # Mock data
+        fake_file_path = "path/mock.json"
+        content = [{
+            "test_key_1": "test_value_1",
+            "test_key_2": "test_value_2",
+        }]
+        expect_content = """
+        [{"test_key_1": "test_value_1", "test_key_2": "test_value_2"}]
+        """
+        dumps.return_value = expect_content
+        # Test
+        with patch(
+            "src.having_a_sip.file_utils.open",
+            mock_open()
+        ) as mock_file:
+            _file_utils.dump_file(
+                filename=fake_file_path,
+                content=content
+            )
+        # Assert
+            dumps.assert_called_once_with(content, indent=4)
+            mock_file.assert_called_once_with(fake_file_path, "w")
+            mock_file().write.assert_called_once_with(expect_content)
+
+    @patch("src.having_a_sip.file_utils.json.dumps")
+    def test_dump_file_dict(self, dumps):
+        """Test dump_file function. Dump dict to a json file"""
+        # Mock data
+        fake_file_path = "path/mock.json"
+        content = {
+            "test_key_1": "test_value_1",
+            "test_key_2": "test_value_2",
+        }
+        expect_content = """
+        {"test_key_1": "test_value_1", "test_key_2": "test_value_2"}
+        """
+        dumps.return_value = expect_content
+        # Test
+        with patch(
+            "src.having_a_sip.file_utils.open",
+            mock_open()
+        ) as mock_file:
+            _file_utils.dump_file(
+                filename=fake_file_path,
+                content=content
+            )
+        # Assert
+            dumps.assert_called_once_with(content, indent=4)
+            mock_file.assert_called_once_with(fake_file_path, "w")
+            mock_file().write.assert_called_once_with(expect_content)
