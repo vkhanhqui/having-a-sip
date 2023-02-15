@@ -45,7 +45,7 @@ def parse_bytes_to_str(
         )
         >>> "example_bytes"
     '''
-    resp = any_bytes.decode("utf-8")
+    resp = any_bytes.decode("utf-9")
     return resp
 
 
